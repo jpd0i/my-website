@@ -3,134 +3,338 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عبد الإله | الصفحة الشخصية</title>
+    <title>عبد الإله | Abdulilah - Portfolio</title>
+    <!-- استدعاء مكتبة الأيقونات العالمية FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --text-color: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent-color: #38bdf8;
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --primary-color: #00ff66;
+            --primary-dim: rgba(0, 255, 102, 0.15);
+            --text-main: #f0f6fc;
+            --text-muted: #8b949e;
+            --border-color: #30363d;
         }
-        
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: all 0.3s ease;
         }
 
         body {
             background-color: var(--bg-color);
-            color: var(--text-color);
+            color: var(--text-main);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             padding: 20px;
+            overflow-x: hidden;
         }
 
-        .container {
+        /* إضاءة خلفية خفيفة خلف الكارد */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: var(--primary-color);
+            filter: blur(150px);
+            opacity: 0.05;
+            top: 10%;
+            left: 10%;
+            pointer-events: none;
+        }
+
+        .portfolio-card {
             background-color: var(--card-bg);
-            padding: 40px;
+            border: 1px solid var(--border-color);
             border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            max-width: 500px;
             width: 100%;
-            text-align: center;
-            border: 1px solid #334155;
+            max-width: 550px;
+            padding: 40px 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
         }
 
-        .profile-img {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background-color: var(--accent-color);
-            margin: 0 auto 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 48px;
-            color: var(--bg-color);
+        .portfolio-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #00ff66, #00aa44);
+        }
+
+        /* زر تبديل اللغة */
+        .lang-switch {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+        
+        html[dir="ltr"] .lang-switch {
+            left: auto;
+            right: 20px;
+        }
+
+        .lang-btn {
+            background: var(--primary-dim);
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
             font-weight: bold;
         }
 
-        h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
+        .lang-btn:hover {
+            background: var(--primary-color);
+            color: var(--bg-color);
+            box-shadow: 0 0 12px var(--primary-color);
         }
 
-        .title {
-            color: var(--accent-color);
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        /* شريط التيرمنال العلوي للمحاكاة */
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
         }
 
-        .bio {
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        .dot.r { background: #ff5f56; }
+        .dot.y { background: #ffbd2e; }
+        .dot.g { background: #27c93f; }
+
+        .terminal-title {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.8rem;
             color: var(--text-muted);
-            font-size: 15px;
+            margin-right: 10px;
+        }
+        html[dir="ltr"] .terminal-title {
+            margin-right: 0;
+            margin-left: 10px;
+        }
+
+        /* منطقة الهوية الشخصية */
+        .profile-zone {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .avatar-container {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #0d1117;
+            border: 2px solid var(--primary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 15px auto;
+            box-shadow: 0 0 20px rgba(0, 255, 102, 0.2);
+        }
+
+        .avatar-container i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+        }
+
+        .name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+
+        .tagline {
+            font-family: 'Courier New', Courier, monospace;
+            color: var(--primary-color);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        /* النصوص والمعلومات */
+        .bio-block {
+            background: rgba(13, 17, 23, 0.7);
+            border-left: 3px solid var(--primary-color);
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
             line-height: 1.6;
+            color: var(--text-muted);
+            text-align: justify;
+        }
+
+        html[dir="ltr"] .bio-block {
+            border-left: none;
+            border-right: 3px solid var(--primary-color);
+            border-radius: 8px 0 0 8px;
+        }
+
+        /* وسوم التقنيات */
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
             margin-bottom: 30px;
         }
 
-        .info-box {
-            background-color: rgba(15, 23, 42, 0.5);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            text-align: right;
-            border-right: 4px solid var(--accent-color);
+        .skill-badge {
+            background: #21262d;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-family: 'Courier New', Courier, monospace;
         }
 
-        .info-box strong {
-            color: var(--text-color);
-            display: block;
-            font-size: 14px;
-            margin-bottom: 3px;
+        .skill-badge span {
+            color: var(--primary-color);
+            margin-left: 4px;
         }
 
-        .info-box span {
-            color: var(--text-muted);
-            font-size: 14px;
+        /* الأيقونات وشبكة الحسابات */
+        .social-grid {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 10px;
         }
 
-        footer {
-            margin-top: 30px;
-            font-size: 12px;
-            color: var(--text-muted);
+        .social-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #21262d;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.4rem;
+            text-decoration: none;
+        }
+
+        /* تأثيرات حركة الأيقونات عند التمرير باللون الأخضر */
+        .social-btn:hover {
+            color: var(--bg-color);
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 15px var(--primary-color);
+            transform: translateY(-4px);
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- يمكنك استبدال الحرف بصورتك لاحقاً -->
-        <div class="profile-img">A</div>
-        
-        <h1>عبد الإله</h1>
-        <div class="title">مطور مهارات رقمية ومهتم بالتجارة والتسويق</div>
-        
-        <p class="bio">
-            مرحباً بك في موقعي الشخصي! أنا هنا لأستكشف عوالم البرمجة، التقنية، وإدارة الأعمال. أعمل حالياً على تطوير مهاراتي في التسويق الرقمي والمبيعات لبناء مشاريع رقمية ناجحة.
-        </p>
-
-        <div class="info-box">
-            <strong>الاهتمامات الحالية</strong>
-            <span>تطوير الويب، أتمتة المهام، التسويق الرقمي، وإدارة الأنظمة التجارية.</span>
+    <div class="portfolio-card">
+        <!-- زر التبديل -->
+        <div class="lang-switch">
+            <button class="lang-btn" onclick="toggleLanguage()" id="langBtn">English</button>
         </div>
 
-        <div class="info-box">
-            <strong>البريد الإلكتروني</strong>
-            <span>تواصل معي عبر بريدي الإلكتروني الخاص بالدومين قريباً.</span>
+        <!-- تيرمنال علوي -->
+        <div class="terminal-header">
+            <div class="dot r"></div>
+            <div class="dot y"></div>
+            <div class="dot g"></div>
+            <div class="terminal-title" id="terminalTitle">main.py</div>
         </div>
 
-        <footer>
-            جميع الحقوق محفوظة © 2026 | abdulilah.online
-        </footer>
+        <div class="profile-zone">
+            <div class="avatar-container">
+                <i class="fa-solid fa-code"></i>
+            </div>
+            
+            <!-- القسم العربي -->
+            <div id="content-ar">
+                <h1 class="name">عبد الإله</h1>
+                <div class="tagline">&lt;مطور برمجيات ونظم أتمتة /&gt;</div>
+                <div class="bio-block">
+                    مرحباً بك في مساحتي البرمجية الخاصة. أنا شغوف ببناء الأنظمة الذكية، أتمتة المهام المعقدة، وابتكار حلول رقمية فعّالة تجمع بين قوة البرمجة، إدارة الأنظمة، واستراتيجيات التسويق الرقمي الحديثة.
+                </div>
+            </div>
+
+            <!-- القسم الإنجليزي (مخفي افتراضياً) -->
+            <div id="content-en" style="display: none;">
+                <h1 class="name">Abdulilah</h1>
+                <div class="tagline">&lt;Software Engineer & Automation Specialist /&gt;</div>
+                <div class="bio-block">
+                    Welcome to my workspace. I focus on developing advanced tech applications, automating workflows, and building high-performance solutions integrated with smart system architectures and digital business insights.
+                </div>
+            </div>
+        </div>
+
+        <!-- لغات البرمجة والمهارات المضافة كعلامات برمجية -->
+        <div class="skills-container">
+            <div class="skill-badge"><span>#</span>Python</div>
+            <div class="skill-badge"><span>#</span>JavaScript</div>
+            <div class="skill-badge"><span>#</span>Automation</div>
+            <div class="skill-badge"><span>#</span>Web_Dev</div>
+            <div class="skill-badge"><span>#</span>Git</div>
+        </div>
+
+        <!-- شبكة الأيقونات بروابطك الصحيحة والمباشرة -->
+        <div class="social-grid">
+            <a href="https://discord.gg/YwZMNEW3" target="_blank" class="social-btn" title="Discord">
+                <i class="fa-brands fa-discord"></i>
+            </a>
+            <a href="http://instagram.com/j.ps0i/" target="_blank" class="social-btn" title="Instagram">
+                <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="https://t.me/Jps0i" target="_blank" class="social-btn" title="Telegram">
+                <i class="fa-brands fa-telegram"></i>
+            </a>
+            <a href="https://www.facebook.com/share/1E8bdfv8wt/" target="_blank" class="social-btn" title="Facebook">
+                <i class="fa-brands fa-facebook-f"></i>
+            </a>
+        </div>
     </div>
 
+    <!-- كود الجافا سكريبت المسؤول عن قلب محتوى الموقع ديناميكياً وعكس اتجاهات النصوص -->
+    <script>
+        function toggleLanguage() {
+            const html = document.documentElement;
+            const arContent = document.getElementById('content-ar');
+            const enContent = document.getElementById('content-en');
+            const langBtn = document.getElementById('langBtn');
+            const terminalTitle = document.getElementById('terminalTitle');
+
+            if (html.getAttribute('lang') === 'ar') {
+                html.setAttribute('lang', 'en');
+                html.setAttribute('dir', 'ltr');
+                arContent.style.display = 'none';
+                enContent.style.display = 'block';
+                langBtn.innerText = 'العربية';
+                terminalTitle.innerText = 'main.js';
+            } else {
+                html.setAttribute('lang', 'ar');
+                html.setAttribute('dir', 'rtl');
+                arContent.style.display = 'block';
+                enContent.style.display = 'none';
+                langBtn.innerText = 'English';
+                terminalTitle.innerText = 'main.py';
+            }
+        }
+    </script>
 </body>
 </html>
