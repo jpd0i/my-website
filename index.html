@@ -65,6 +65,54 @@
             height: 100%;
             z-index: 1;
             display: block;
+            touch-action: pan-y;
+        }
+
+        /* ===== شاشة الإقلاع (Boot Loader) ===== */
+        .boot-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            background: #03050a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            transition: opacity 0.55s ease, visibility 0.55s ease;
+        }
+
+        .boot-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .boot-terminal {
+            width: min(440px, 92vw);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.72rem, 2.6vw, 0.86rem);
+            color: var(--primary-color);
+            line-height: 1.8;
+            text-shadow: 0 0 8px rgba(0, 255, 102, 0.3);
+        }
+
+        .boot-line {
+            opacity: 0;
+            transform: translateY(4px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .boot-line.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .boot-cursor {
+            display: inline-block;
+            margin-inline-start: 4px;
+            animation: blink 0.9s step-end infinite;
         }
 
         .portfolio-card {
@@ -83,17 +131,29 @@
             position: relative;
             overflow: hidden;
             z-index: 2;
-            animation: cardRise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+            opacity: 0;
+            transform: scale(0.93) translateY(10px);
+            filter: blur(10px);
         }
 
-        @keyframes cardRise {
-            from {
+        .portfolio-card.reveal {
+            animation: cardReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes cardReveal {
+            0% {
                 opacity: 0;
-                transform: translateY(14px) scale(0.985);
+                transform: scale(0.93) translateY(10px);
+                filter: blur(10px);
             }
-            to {
+            55% {
                 opacity: 1;
-                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+                filter: blur(0);
             }
         }
 
@@ -173,7 +233,8 @@
         .terminal-header {
             display: flex;
             align-items: center;
-            gap: 7px;
+            flex-wrap: wrap;
+            gap: 9px 14px;
             margin-bottom: clamp(20px, 5vw, 28px);
             border-bottom: 1px solid var(--border-soft);
             padding-bottom: clamp(10px, 2.5vw, 14px);
@@ -183,6 +244,21 @@
         html[dir="rtl"] .terminal-header {
             padding-right: 0;
             padding-left: 90px;
+        }
+
+        .term-left {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .term-right {
+            margin-inline-start: auto;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 8px;
         }
 
         .dot {
@@ -208,6 +284,144 @@
         html[dir="rtl"] .terminal-title {
             margin-left: 0;
             margin-right: 8px;
+        }
+
+        /* شارة الحالة النابضة */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0, 255, 102, 0.06);
+            border: 1px solid rgba(0, 255, 102, 0.25);
+            padding: 4px 11px;
+            border-radius: 20px;
+            font-size: clamp(0.6rem, 2vw, 0.68rem);
+            font-weight: 600;
+            color: var(--primary-color);
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+            line-height: 1;
+        }
+
+        html[dir="rtl"] .status-badge {
+            font-family: 'Cairo', sans-serif;
+            font-weight: 700;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            box-shadow: 0 0 6px rgba(0, 255, 102, 0.85);
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .status-dot::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 255, 102, 0.55);
+            animation: statusPulse 1.8s ease-out infinite;
+        }
+
+        @keyframes statusPulse {
+            0% { transform: scale(0.5); opacity: 0.9; }
+            100% { transform: scale(2.4); opacity: 0; }
+        }
+
+        /* شارة الوقت الحي (نظام خلفي) */
+        .sys-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.56rem, 1.8vw, 0.64rem);
+            color: var(--text-muted);
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+            opacity: 0.75;
+            direction: ltr;
+            unicode-bidi: isolate;
+            border: 1px solid var(--border-soft);
+            padding: 4px 9px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.015);
+        }
+
+        /* زر وضع التوفير (Eco-Mode) */
+        .eco-toggle {
+            position: fixed;
+            bottom: clamp(14px, 4vw, 24px);
+            right: clamp(14px, 4vw, 24px);
+            z-index: 10;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(0, 255, 102, 0.06);
+            border: 1px solid rgba(0, 255, 102, 0.3);
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html[dir="rtl"] .eco-toggle {
+            right: auto;
+            left: clamp(14px, 4vw, 24px);
+        }
+
+        .eco-toggle:hover,
+        .eco-toggle:focus-visible {
+            background: var(--primary-color);
+            color: #000;
+            box-shadow: 0 0 16px rgba(0, 255, 102, 0.5);
+        }
+
+        .eco-toggle.active {
+            background: var(--primary-color);
+            color: #000;
+            box-shadow: 0 0 14px rgba(0, 255, 102, 0.45);
+        }
+
+        .eco-toggle:active {
+            transform: scale(0.92);
+        }
+
+        .eco-toggle:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 3px;
+        }
+
+        /* تخفيف تأثيرات الوضع الاقتصادي */
+        body.eco-mode .portfolio-card {
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6) !important;
+        }
+
+        body.eco-mode .portfolio-card::before {
+            animation: none !important;
+            opacity: 0.35;
+        }
+
+        body.eco-mode .avatar-container {
+            animation: none !important;
+            box-shadow: 0 0 0 3px rgba(0, 255, 102, 0.05) !important;
+        }
+
+        body.eco-mode .avatar-container i {
+            filter: none !important;
+        }
+
+        body.eco-mode .tagline {
+            text-shadow: none !important;
+        }
+
+        body.eco-mode .status-dot::before {
+            animation: none !important;
+            opacity: 0;
         }
 
         /* الهوية الشخصية */
@@ -265,11 +479,28 @@
             font-weight: 600;
             letter-spacing: 0.01em;
             text-shadow: 0 0 14px rgba(0, 255, 102, 0.25);
+            min-height: 1.4em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
         }
 
         html[dir="rtl"] .tagline {
             font-family: 'Cairo', sans-serif;
             font-weight: 700;
+        }
+
+        .tagline .cursor {
+            display: inline-block;
+            margin-inline-start: 2px;
+            color: var(--primary-color);
+            animation: blink 0.9s step-end infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
 
         /* النصوص والمعلومات داخل الكارد الأسود */
@@ -391,6 +622,11 @@
             .social-grid {
                 gap: 12px;
             }
+            .term-right {
+                margin-inline-start: 0;
+                width: 100%;
+                justify-content: flex-start;
+            }
         }
 
         @media (max-width: 420px) {
@@ -416,7 +652,8 @@
         @media (hover: none) {
             .social-btn:hover,
             .lang-btn:hover,
-            .skill-badge:hover {
+            .skill-badge:hover,
+            .eco-toggle:hover {
                 box-shadow: none;
             }
         }
@@ -436,16 +673,38 @@
     <!-- كانفاس قطرات المطر الحقيقية باللون الأخضر -->
     <canvas id="rain-canvas"></canvas>
 
-    <div class="portfolio-card">
+    <!-- شاشة الإقلاع (تظهر مرة واحدة فقط عند التحميل) -->
+    <div class="boot-loader" id="bootLoader" aria-hidden="true">
+        <div class="boot-terminal">
+            <div class="boot-lines" id="bootLines"></div>
+            <span class="boot-cursor">_</span>
+        </div>
+    </div>
+
+    <!-- زر وضع التوفير -->
+    <button class="eco-toggle" id="ecoToggle" type="button" title="Eco Mode" aria-pressed="false">
+        <i class="fa-solid fa-leaf" id="ecoIcon"></i>
+    </button>
+
+    <div class="portfolio-card" id="portfolioCard">
         <div class="lang-switch">
             <button class="lang-btn" onclick="toggleLanguage()" id="langBtn">العربية</button>
         </div>
 
         <div class="terminal-header">
-            <div class="dot r"></div>
-            <div class="dot y"></div>
-            <div class="dot g"></div>
-            <div class="terminal-title" id="terminalTitle">main.js</div>
+            <div class="term-left">
+                <div class="dot r"></div>
+                <div class="dot y"></div>
+                <div class="dot g"></div>
+                <div class="terminal-title" id="terminalTitle">main.js</div>
+            </div>
+            <div class="term-right">
+                <div class="status-badge" id="statusBadge">
+                    <span class="status-dot"></span>
+                    <span id="statusText">Status: Active &amp; Building</span>
+                </div>
+                <div class="sys-time" id="sysTime">SYS_TIME: 00:00:00</div>
+            </div>
         </div>
 
         <div class="profile-zone">
@@ -456,7 +715,7 @@
             <!-- الإنجليزي -->
             <div id="content-en">
                 <h1 class="name">Abdulilah</h1>
-                <div class="tagline">&lt;Software Engineer &amp; Automation Specialist /&gt;</div>
+                <div class="tagline"><span id="taglineTextEn"></span><span class="cursor" aria-hidden="true">|</span></div>
                 <div class="bio-block">
                     Welcome to my workspace. I focus on developing advanced tech applications, automating workflows, and building high-performance solutions integrated with smart system architectures and digital business insights.
                 </div>
@@ -464,7 +723,7 @@
             <!-- العربي -->
             <div id="content-ar" style="display: none;">
                 <h1 class="name">عبد الإله</h1>
-                <div class="tagline">&lt;مطور برمجيات ونظم أتمتة /&gt;</div>
+                <div class="tagline"><span id="taglineTextAr"></span><span class="cursor" aria-hidden="true">|</span></div>
                 <div class="bio-block">
                     مرحباً بك في مساحتي البرمجية الخاصة. أنا شغوف ببناء الأنظمة الذكية، أتمتة المهام المعقدة، وابتكار حلول رقمية فعّالة تجمع بين قوة البرمجة، إدارة الأنظمة، واستراتيجيات التسويق الرقمي الحديثة.
                 </div>
@@ -496,6 +755,99 @@
     </div>
 
     <script>
+        // ===== محرك الكتابة الطرفية (Typewriter) للـ tagline =====
+        const taglinePhrases = {
+            en: ['<Software Engineer />', '<Automation Specialist />'],
+            ar: ['<مطور برمجيات />', '<نظم أتمتة />']
+        };
+
+        const twState = {
+            lang: 'en',
+            phraseIndex: 0,
+            charIndex: 0,
+            deleting: false,
+            timer: null
+        };
+
+        function getTaglineEl(lang) {
+            return document.getElementById(lang === 'ar' ? 'taglineTextAr' : 'taglineTextEn');
+        }
+
+        function typeTick() {
+            const el = getTaglineEl(twState.lang);
+            if (!el) return;
+
+            const phrases = taglinePhrases[twState.lang];
+            const phrase = phrases[twState.phraseIndex];
+            let delay;
+
+            if (!twState.deleting) {
+                twState.charIndex++;
+                el.textContent = phrase.slice(0, twState.charIndex);
+                delay = 78 + Math.random() * 45;
+
+                if (twState.charIndex >= phrase.length) {
+                    twState.deleting = true;
+                    delay = 1700; // إيقاف مؤقت أثناء عرض النص كاملاً
+                }
+            } else {
+                twState.charIndex--;
+                el.textContent = phrase.slice(0, twState.charIndex);
+                delay = 38;
+
+                if (twState.charIndex <= 0) {
+                    twState.deleting = false;
+                    twState.phraseIndex = (twState.phraseIndex + 1) % phrases.length;
+                    delay = 420; // إيقاف مؤقت قبل بدء العبارة التالية
+                }
+            }
+
+            twState.timer = setTimeout(typeTick, delay);
+        }
+
+        function resetTypewriter(lang) {
+            clearTimeout(twState.timer);
+
+            // تفريغ فوري لكلا الحقلين لمنع أي وميض أو انزياح في التخطيط عند تبديل اللغة
+            const enEl = document.getElementById('taglineTextEn');
+            const arEl = document.getElementById('taglineTextAr');
+            if (enEl) enEl.textContent = '';
+            if (arEl) arEl.textContent = '';
+
+            twState.lang = lang;
+            twState.phraseIndex = 0;
+            twState.charIndex = 0;
+            twState.deleting = false;
+
+            typeTick();
+        }
+
+        // ===== شارة الحالة (Status Badge) =====
+        const statusCopy = {
+            en: 'Status: Active & Building',
+            ar: 'الحالة: نشط وأعمل'
+        };
+
+        function updateStatusBadge(lang) {
+            const statusText = document.getElementById('statusText');
+            if (statusText) statusText.innerText = statusCopy[lang];
+        }
+
+        // ===== الساعة الحية (SYS_TIME) =====
+        function pad2(n) {
+            return String(n).padStart(2, '0');
+        }
+
+        function updateSysTime() {
+            const el = document.getElementById('sysTime');
+            if (!el) return;
+            const now = new Date();
+            el.textContent = 'SYS_TIME: ' + pad2(now.getHours()) + ':' + pad2(now.getMinutes()) + ':' + pad2(now.getSeconds());
+        }
+
+        updateSysTime();
+        setInterval(updateSysTime, 1000);
+
         // ===== تبديل اللغة =====
         function toggleLanguage() {
             const html = document.documentElement;
@@ -511,6 +863,9 @@
                 arContent.style.display = 'block';
                 langBtn.innerText = 'English';
                 terminalTitle.innerText = 'main.py';
+
+                updateStatusBadge('ar');
+                resetTypewriter('ar');
             } else {
                 html.setAttribute('lang', 'en');
                 html.setAttribute('dir', 'ltr');
@@ -518,10 +873,93 @@
                 arContent.style.display = 'none';
                 langBtn.innerText = 'العربية';
                 terminalTitle.innerText = 'main.js';
+
+                updateStatusBadge('en');
+                resetTypewriter('en');
             }
         }
 
-        // ===== محاكاة مطر رقمي أخضر، عالية الأداء ومتجاوبة =====
+        // بدء تشغيل الكتابة الطرفية عند التحميل
+        resetTypewriter('en');
+
+        // ===== شاشة الإقلاع (Boot Loader) — تعمل مرة واحدة فقط عند التحميل =====
+        (function runBootSequence() {
+            const bootLines = [
+                'booting neon-core system...',
+                'Loading system modules...',
+                'Calibrating rain renderer...',
+                'Establishing secure connection...',
+                'Access granted — welcome, guest.'
+            ];
+
+            const loader = document.getElementById('bootLoader');
+            const linesEl = document.getElementById('bootLines');
+            const card = document.getElementById('portfolioCard');
+            const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            if (!loader || !linesEl || !card) return;
+
+            let i = 0;
+            const stepDelay = reducedMotion ? 60 : 380;
+
+            function nextLine() {
+                if (i < bootLines.length) {
+                    const div = document.createElement('div');
+                    div.className = 'boot-line';
+                    div.textContent = '> ' + bootLines[i];
+                    linesEl.appendChild(div);
+
+                    requestAnimationFrame(function () {
+                        requestAnimationFrame(function () {
+                            div.classList.add('show');
+                        });
+                    });
+
+                    i++;
+                    setTimeout(nextLine, stepDelay + Math.random() * (reducedMotion ? 30 : 220));
+                } else {
+                    setTimeout(finishBoot, reducedMotion ? 80 : 480);
+                }
+            }
+
+            function finishBoot() {
+                loader.classList.add('hidden');
+                card.classList.add('reveal');
+                setTimeout(function () {
+                    if (loader.parentNode) loader.parentNode.removeChild(loader);
+                }, 650);
+            }
+
+            nextLine();
+        })();
+
+        // ===== وضع التوفير (Eco-Mode) =====
+        (function setupEcoMode() {
+            const ecoToggle = document.getElementById('ecoToggle');
+            const ecoIcon = document.getElementById('ecoIcon');
+            if (!ecoToggle || !ecoIcon) return;
+
+            let ecoMode = false;
+
+            ecoToggle.addEventListener('click', function () {
+                ecoMode = !ecoMode;
+                document.body.classList.toggle('eco-mode', ecoMode);
+                ecoToggle.classList.toggle('active', ecoMode);
+                ecoToggle.setAttribute('aria-pressed', String(ecoMode));
+                ecoIcon.className = ecoMode ? 'fa-solid fa-bolt' : 'fa-solid fa-leaf';
+                ecoToggle.title = ecoMode ? 'Full Visuals' : 'Eco Mode';
+
+                if (window.rainEngine) {
+                    if (ecoMode) {
+                        window.rainEngine.pause();
+                    } else {
+                        window.rainEngine.resume();
+                    }
+                }
+            });
+        })();
+
+        // ===== محاكاة مطر رقمي أخضر، عالية الأداء ومتجاوبة وتفاعلية مع المؤشر/اللمس =====
         (function () {
             const canvas = document.getElementById('rain-canvas');
             const ctx = canvas.getContext('2d', { alpha: true });
@@ -531,6 +969,11 @@
             let drops = [];
             let maxDrops = 120;
             let isMobile = false;
+            let pointerRadius = 90;
+            let rafId = null;
+
+            // حالة المؤشر / اللمس لتفاعل قطرات المطر (تأثير "المظلة المغناطيسية")
+            const pointer = { x: 0, y: 0, active: false };
 
             // حساب الإعدادات المناسبة حسب حجم الشاشة (كثافة/طول/سرعة)
             function getResponsiveConfig(w) {
@@ -559,6 +1002,8 @@
             function buildDrops() {
                 cfg = getResponsiveConfig(width);
                 isMobile = width <= 600;
+                // نطاق التفاعل مع المؤشر بين 80 و100 بكسل حسب حجم الشاشة
+                pointerRadius = width <= 420 ? 80 : (width <= 768 ? 90 : 100);
                 const target = Math.min(cfg.maxDrops, Math.round(width * height * cfg.density));
                 maxDrops = Math.max(24, target);
                 drops = new Array(maxDrops).fill(null).map(() => makeDrop(true));
@@ -588,11 +1033,56 @@
 
             resizeCanvas();
 
+            // ----- تتبّع الفأرة (سطح المكتب) -----
+            window.addEventListener('mousemove', function (e) {
+                pointer.x = e.clientX;
+                pointer.y = e.clientY;
+                pointer.active = true;
+            }, { passive: true });
+
+            window.addEventListener('mouseleave', function () {
+                pointer.active = false;
+            });
+
+            document.addEventListener('mouseout', function (e) {
+                if (!e.relatedTarget) pointer.active = false;
+            });
+
+            // ----- تتبّع اللمس (الجوال/التابلت) -----
+            window.addEventListener('touchmove', function (e) {
+                if (e.touches && e.touches.length) {
+                    pointer.x = e.touches[0].clientX;
+                    pointer.y = e.touches[0].clientY;
+                    pointer.active = true;
+                }
+            }, { passive: true });
+
+            window.addEventListener('touchstart', function (e) {
+                if (e.touches && e.touches.length) {
+                    pointer.x = e.touches[0].clientX;
+                    pointer.y = e.touches[0].clientY;
+                    pointer.active = true;
+                }
+            }, { passive: true });
+
+            window.addEventListener('touchend', function () {
+                pointer.active = false;
+            }, { passive: true });
+
+            window.addEventListener('touchcancel', function () {
+                pointer.active = false;
+            }, { passive: true });
+
+            // إخفاء التأثير التفاعلي عند مغادرة النافذة/التبويب لتفادي أي حالة "عالقة"
+            window.addEventListener('blur', function () {
+                pointer.active = false;
+            });
+
             let lastTime = performance.now();
             const targetFrameMs = 1000 / 60;
 
             function drawRain(now) {
-                requestAnimationFrame(drawRain);
+                rafId = requestAnimationFrame(drawRain);
 
                 const delta = now - lastTime;
                 if (delta < targetFrameMs - 2) return; // clamp to ~60fps, saves battery on high-refresh screens
@@ -607,17 +1097,37 @@
                 for (let i = 0; i < drops.length; i++) {
                     const drop = drops[i];
 
-                    ctx.strokeStyle = `rgba(0, 255, 102, ${(cfg.alpha * drop.opacity).toFixed(3)})`;
+                    // تفاعل القطرة مع موقع المؤشر/اللمس: انحراف ناعم يشبه المجال المغناطيسي
+                    let drawX = drop.x;
+                    let boost = 1;
+
+                    if (pointer.active) {
+                        const dx = drop.x - pointer.x;
+                        const dy = (drop.y + drop.length / 2) - pointer.y;
+                        const distSq = dx * dx + dy * dy;
+                        const radiusSq = pointerRadius * pointerRadius;
+
+                        if (distSq < radiusSq) {
+                            const dist = Math.sqrt(distSq) || 0.001;
+                            const force = 1 - dist / pointerRadius;
+                            const angle = Math.atan2(dy, dx);
+                            drawX = drop.x + Math.cos(angle) * force * 22;
+                            boost = 1 + force * 0.55;
+                        }
+                    }
+
+                    const finalAlpha = Math.min(1, cfg.alpha * drop.opacity * boost);
+                    ctx.strokeStyle = `rgba(0, 255, 102, ${finalAlpha.toFixed(3)})`;
                     ctx.lineWidth = cfg.lineWidth;
 
                     ctx.beginPath();
-                    ctx.moveTo(drop.x, drop.y);
-                    ctx.lineTo(drop.x, drop.y + drop.length);
+                    ctx.moveTo(drawX, drop.y);
+                    ctx.lineTo(drawX, drop.y + drop.length);
                     ctx.stroke();
 
                     // توهج خفيف لرأس القطرة لإحساس أكثر واقعية
-                    ctx.fillStyle = `rgba(160, 255, 200, ${(0.5 * drop.opacity).toFixed(3)})`;
-                    ctx.fillRect(drop.x - 0.5, drop.y + drop.length, 1, 1.5);
+                    ctx.fillStyle = `rgba(160, 255, 200, ${Math.min(1, 0.5 * drop.opacity * boost).toFixed(3)})`;
+                    ctx.fillRect(drawX - 0.5, drop.y + drop.length, 1, 1.5);
 
                     drop.y += drop.speed * speedScale;
 
@@ -633,9 +1143,27 @@
             // إيقاف الرسم عند إخفاء التبويب لتوفير الأداء والبطارية
             document.addEventListener('visibilitychange', function () {
                 if (!document.hidden) lastTime = performance.now();
+                else pointer.active = false;
             });
 
-            requestAnimationFrame(drawRain);
+            rafId = requestAnimationFrame(drawRain);
+
+            // ----- التحكم الخارجي بالمحرك (لوضع التوفير Eco-Mode) -----
+            window.rainEngine = {
+                pause: function () {
+                    if (rafId !== null) {
+                        cancelAnimationFrame(rafId);
+                        rafId = null;
+                    }
+                    pointer.active = false;
+                },
+                resume: function () {
+                    if (rafId === null) {
+                        lastTime = performance.now();
+                        rafId = requestAnimationFrame(drawRain);
+                    }
+                }
+            };
         })();
     </script>
 </body>
