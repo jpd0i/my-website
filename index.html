@@ -2,63 +2,99 @@
 <html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#05070a">
     <title>Abdulilah | عبد الإله - Portfolio</title>
     <!-- استدعاء مكتبة الأيقونات العالمية FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #06090e; /* أسود دامس وأعمق */
-            --card-bg: rgba(22, 27, 34, 0.85); /* كارد شفاف قليلاً ليوضح المطر خلفه */
+            --bg-color: #05070a;
+            --card-bg: #000000;
+            --card-bg-soft: #060a0f;
             --primary-color: #00ff66;
-            --primary-dim: rgba(0, 255, 102, 0.15);
-            --text-main: #f0f6fc;
-            --text-muted: #8b949e;
-            --border-color: #30363d;
+            --primary-glow: #00ff66;
+            --primary-dim: rgba(0, 255, 102, 0.14);
+            --primary-dim-2: rgba(0, 255, 102, 0.06);
+            --text-main: #f2f7fb;
+            --text-muted: #8ea0ac;
+            --border-color: #1b2129;
+            --border-soft: rgba(255, 255, 255, 0.06);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        html {
+            -webkit-text-size-adjust: 100%;
         }
 
         body {
+            font-family: 'JetBrains Mono', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
+            background-image:
+                radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0, 255, 102, 0.06), transparent 60%),
+                radial-gradient(ellipse 60% 50% at 100% 100%, rgba(0, 255, 102, 0.03), transparent 60%);
             color: var(--text-main);
             display: flex;
             justify-content: center;
             align-items: center;
+            min-height: 100svh;
             min-height: 100vh;
-            padding: 20px;
-            overflow: hidden; /* يمنع السكرول الخارجي بسبب المطر */
+            padding: clamp(16px, 5vw, 40px);
+            overflow: hidden;
             position: relative;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* كانفاس المطر الرقمي في الخلفية */
-        #matrix-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
+        html[dir="rtl"] body {
+            font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+        }
+
+        /* كانفاس قطرات المطر في الخلفية */
+        #rain-canvas {
+            position: fixed;
+            inset: 0;
             width: 100%;
             height: 100%;
             z-index: 1;
+            display: block;
         }
 
         .portfolio-card {
-            background-color: var(--card-bg);
+            background:
+                linear-gradient(180deg, var(--card-bg-soft) 0%, var(--card-bg) 14%);
             border: 1px solid var(--border-color);
-            border-radius: 16px;
+            border-radius: clamp(16px, 3vw, 22px);
             width: 100%;
             max-width: 550px;
-            padding: 40px 30px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+            padding: clamp(26px, 6vw, 44px) clamp(20px, 5.5vw, 36px);
+            box-shadow:
+                0 0 0 1px rgba(0, 255, 102, 0.05),
+                0 30px 70px rgba(0, 0, 0, 0.85),
+                0 8px 24px rgba(0, 0, 0, 0.6),
+                0 0 90px -30px rgba(0, 255, 102, 0.35);
             position: relative;
             overflow: hidden;
-            z-index: 2; /* يضمن ظهور الكارد فوق المطر */
-            backdrop-filter: blur(8px); /* تغبيش فخم للمطر خلف الكارد لسهولة القراءة */
+            z-index: 2;
+            animation: cardRise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        @keyframes cardRise {
+            from {
+                opacity: 0;
+                transform: translateY(14px) scale(0.985);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         .portfolio-card::before {
@@ -67,185 +103,338 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, #00ff66, #00aa44);
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #00ff66 25%, #00ffaa 50%, #00ff66 75%, transparent);
+            background-size: 200% 100%;
+            animation: shimmer 5s linear infinite;
+            opacity: 0.9;
+        }
+
+        .portfolio-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            border-radius: inherit;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
 
         /* زر تبديل اللغة */
         .lang-switch {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: clamp(16px, 4vw, 22px);
+            right: clamp(16px, 4vw, 22px);
+            z-index: 3;
         }
-        
+
         html[dir="rtl"] .lang-switch {
             right: auto;
-            left: 20px;
+            left: clamp(16px, 4vw, 22px);
         }
 
         .lang-btn {
-            background: var(--primary-dim);
-            border: 1px solid var(--primary-color);
+            background: var(--primary-dim-2);
+            border: 1px solid rgba(0, 255, 102, 0.35);
             color: var(--primary-color);
-            padding: 6px 14px;
+            padding: 7px 16px;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: bold;
+            font-family: inherit;
+            font-size: clamp(0.72rem, 2.4vw, 0.82rem);
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease, border-color 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .lang-btn:hover {
+        .lang-btn:hover,
+        .lang-btn:focus-visible {
             background: var(--primary-color);
-            color: var(--bg-color);
-            box-shadow: 0 0 12px var(--primary-color);
+            color: #000;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 18px rgba(0, 255, 102, 0.5), 0 0 4px rgba(0, 255, 102, 0.6);
+        }
+
+        .lang-btn:active {
+            transform: scale(0.94);
+        }
+
+        .lang-btn:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 3px;
         }
 
         /* شريط التيرمنال العلوي */
         .terminal-header {
             display: flex;
             align-items: center;
-            gap: 6px;
-            margin-bottom: 25px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
+            gap: 7px;
+            margin-bottom: clamp(20px, 5vw, 28px);
+            border-bottom: 1px solid var(--border-soft);
+            padding-bottom: clamp(10px, 2.5vw, 14px);
+            padding-right: 90px;
+        }
+
+        html[dir="rtl"] .terminal-header {
+            padding-right: 0;
+            padding-left: 90px;
         }
 
         .dot {
             width: 10px;
             height: 10px;
             border-radius: 50%;
+            flex-shrink: 0;
+            opacity: 0.85;
         }
+
         .dot.r { background: #ff5f56; }
         .dot.y { background: #ffbd2e; }
         .dot.g { background: #27c93f; }
 
         .terminal-title {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.8rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.72rem, 2.4vw, 0.8rem);
             color: var(--text-muted);
-            margin-left: 10px;
+            margin-left: 8px;
+            letter-spacing: 0.02em;
         }
+
         html[dir="rtl"] .terminal-title {
             margin-left: 0;
-            margin-right: 10px;
+            margin-right: 8px;
         }
 
         /* الهوية الشخصية */
         .profile-zone {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: clamp(20px, 5vw, 26px);
         }
 
         .avatar-container {
-            width: 100px;
-            height: 100px;
+            width: clamp(78px, 20vw, 100px);
+            height: clamp(78px, 20vw, 100px);
             border-radius: 50%;
-            background: #0d1117;
+            background: radial-gradient(circle at 50% 35%, #0a1410, #05070a 75%);
             border: 2px solid var(--primary-color);
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 0 auto 15px auto;
-            box-shadow: 0 0 20px rgba(0, 255, 102, 0.2);
+            margin: 0 auto clamp(14px, 3.5vw, 18px) auto;
+            box-shadow:
+                0 0 0 5px rgba(0, 255, 102, 0.05),
+                0 0 24px rgba(0, 255, 102, 0.25),
+                inset 0 0 18px rgba(0, 255, 102, 0.12);
+            position: relative;
+            animation: avatarPulse 3.5s ease-in-out infinite;
+        }
+
+        @keyframes avatarPulse {
+            0%, 100% { box-shadow: 0 0 0 5px rgba(0, 255, 102, 0.05), 0 0 24px rgba(0, 255, 102, 0.25), inset 0 0 18px rgba(0, 255, 102, 0.12); }
+            50% { box-shadow: 0 0 0 7px rgba(0, 255, 102, 0.08), 0 0 34px rgba(0, 255, 102, 0.4), inset 0 0 22px rgba(0, 255, 102, 0.18); }
         }
 
         .avatar-container i {
-            font-size: 2.5rem;
+            font-size: clamp(1.9rem, 6vw, 2.5rem);
             color: var(--primary-color);
+            filter: drop-shadow(0 0 8px rgba(0, 255, 102, 0.5));
         }
 
         .name {
-            font-size: 1.8rem;
+            font-size: clamp(1.5rem, 5.5vw, 1.9rem);
             font-weight: 700;
             color: var(--text-main);
-            margin-bottom: 6px;
+            margin-bottom: 8px;
+            letter-spacing: 0.01em;
+        }
+
+        html[dir="rtl"] .name {
+            font-family: 'Cairo', sans-serif;
+            font-weight: 800;
         }
 
         .tagline {
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'JetBrains Mono', monospace;
             color: var(--primary-color);
-            font-size: 1rem;
+            font-size: clamp(0.82rem, 3vw, 0.98rem);
             font-weight: 600;
+            letter-spacing: 0.01em;
+            text-shadow: 0 0 14px rgba(0, 255, 102, 0.25);
         }
 
-        /* النصوص والمعلومات */
+        html[dir="rtl"] .tagline {
+            font-family: 'Cairo', sans-serif;
+            font-weight: 700;
+        }
+
+        /* النصوص والمعلومات داخل الكارد الأسود */
         .bio-block {
-            background: rgba(13, 17, 23, 0.7);
+            background: linear-gradient(135deg, #090d13, #070a0f);
             border-right: 3px solid var(--primary-color);
-            padding: 15px;
+            padding: clamp(14px, 3.5vw, 18px);
             border-radius: 8px 0 0 8px;
-            margin-bottom: 25px;
-            font-size: 0.95rem;
-            line-height: 1.6;
+            margin-bottom: clamp(20px, 5vw, 28px);
+            font-size: clamp(0.85rem, 2.8vw, 0.95rem);
+            line-height: 1.7;
             color: var(--text-muted);
             text-align: justify;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
         }
 
         html[dir="rtl"] .bio-block {
             border-right: none;
             border-left: 3px solid var(--primary-color);
             border-radius: 0 8px 8px 0;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 400;
+            line-height: 1.9;
         }
 
         /* وسوم التقنيات */
         .skills-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: clamp(7px, 2vw, 10px);
             justify-content: center;
-            margin-bottom: 30px;
+            margin-bottom: clamp(22px, 5.5vw, 30px);
         }
 
         .skill-badge {
-            background: #21262d;
+            background: #090d13;
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 5px 12px;
+            padding: clamp(5px, 1.5vw, 6px) clamp(11px, 3vw, 14px);
             border-radius: 6px;
-            font-size: 0.8rem;
-            font-family: 'Courier New', Courier, monospace;
+            font-size: clamp(0.72rem, 2.4vw, 0.8rem);
+            font-family: 'JetBrains Mono', monospace;
+            cursor: default;
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .skill-badge span {
             color: var(--primary-color);
-            margin-right: 4px;
+            margin-right: 3px;
         }
 
-        /* الأيقونات وشبكة الحسابات */
+        html[dir="rtl"] .skill-badge span {
+            margin-right: 0;
+            margin-left: 3px;
+        }
+
+        .skill-badge:hover,
+        .skill-badge:active {
+            transform: translateY(-3px);
+            border-color: rgba(0, 255, 102, 0.5);
+            background: var(--primary-dim-2);
+            box-shadow: 0 6px 16px -4px rgba(0, 255, 102, 0.35), 0 0 0 1px rgba(0, 255, 102, 0.15);
+        }
+
+        /* الحسابات الاجتماعية */
         .social-grid {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: clamp(14px, 4vw, 20px);
             margin-top: 10px;
+            flex-wrap: wrap;
         }
 
         .social-btn {
-            width: 50px;
-            height: 50px;
+            width: clamp(44px, 12vw, 50px);
+            height: clamp(44px, 12vw, 50px);
             border-radius: 50%;
-            background: #21262d;
+            background: #090d13;
             border: 1px solid var(--border-color);
             color: var(--text-main);
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 1.4rem;
+            font-size: clamp(1.2rem, 4vw, 1.4rem);
             text-decoration: none;
+            position: relative;
+            transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .social-btn:hover {
-            color: var(--bg-color);
+        .social-btn:hover,
+        .social-btn:focus-visible {
+            color: #000;
             background: var(--primary-color);
             border-color: var(--primary-color);
-            box-shadow: 0 0 15px var(--primary-color);
-            transform: translateY(-4px);
+            box-shadow: 0 0 0 6px rgba(0, 255, 102, 0.08), 0 8px 22px -4px rgba(0, 255, 102, 0.55);
+            transform: translateY(-5px);
+        }
+
+        .social-btn:active {
+            transform: translateY(-2px) scale(0.96);
+        }
+
+        .social-btn:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 3px;
+        }
+
+        /* شاشات صغيرة جدًا */
+        @media (max-width: 360px) {
+            .terminal-header {
+                padding-right: 78px;
+            }
+            html[dir="rtl"] .terminal-header {
+                padding-right: 0;
+                padding-left: 78px;
+            }
+            .social-grid {
+                gap: 12px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            body {
+                padding: 14px;
+            }
+            .bio-block {
+                text-align: start;
+            }
+        }
+
+        /* ارتفاع منخفض (أفقي على الموبايل) */
+        @media (max-height: 480px) {
+            body {
+                align-items: flex-start;
+                overflow-y: auto;
+            }
+            .portfolio-card {
+                margin: 20px 0;
+            }
+        }
+
+        @media (hover: none) {
+            .social-btn:hover,
+            .lang-btn:hover,
+            .skill-badge:hover {
+                box-shadow: none;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.001ms !important;
+            }
         }
     </style>
 </head>
 <body>
-
-    <!-- الكانفاس المسؤول عن تأثير مطر الهاكرز -->
-    <canvas id="matrix-canvas"></canvas>
+    <!-- كانفاس قطرات المطر الحقيقية باللون الأخضر -->
+    <canvas id="rain-canvas"></canvas>
 
     <div class="portfolio-card">
         <div class="lang-switch">
@@ -263,16 +452,15 @@
             <div class="avatar-container">
                 <i class="fa-solid fa-code"></i>
             </div>
-            
+
             <!-- الإنجليزي -->
             <div id="content-en">
                 <h1 class="name">Abdulilah</h1>
-                <div class="tagline">&lt;Software Engineer & Automation Specialist /&gt;</div>
+                <div class="tagline">&lt;Software Engineer &amp; Automation Specialist /&gt;</div>
                 <div class="bio-block">
                     Welcome to my workspace. I focus on developing advanced tech applications, automating workflows, and building high-performance solutions integrated with smart system architectures and digital business insights.
                 </div>
             </div>
-
             <!-- العربي -->
             <div id="content-ar" style="display: none;">
                 <h1 class="name">عبد الإله</h1>
@@ -292,23 +480,23 @@
         </div>
 
         <div class="social-grid">
-            <a href="https://discord.gg/YwZMNEW3" target="_blank" class="social-btn" title="Discord">
+            <a href="https://discord.gg/YwZMNEW3" target="_blank" rel="noopener" class="social-btn" title="Discord">
                 <i class="fa-brands fa-discord"></i>
             </a>
-            <a href="http://instagram.com/j.ps0i/" target="_blank" class="social-btn" title="Instagram">
+            <a href="http://instagram.com/j.ps0i/" target="_blank" rel="noopener" class="social-btn" title="Instagram">
                 <i class="fa-brands fa-instagram"></i>
             </a>
-            <a href="https://t.me/Jps0i" target="_blank" class="social-btn" title="Telegram">
+            <a href="https://t.me/Jps0i" target="_blank" rel="noopener" class="social-btn" title="Telegram">
                 <i class="fa-brands fa-telegram"></i>
             </a>
-            <a href="https://www.facebook.com/share/1E8bdfv8wt/" target="_blank" class="social-btn" title="Facebook">
+            <a href="https://www.facebook.com/share/1E8bdfv8wt/" target="_blank" rel="noopener" class="social-btn" title="Facebook">
                 <i class="fa-brands fa-facebook-f"></i>
             </a>
         </div>
     </div>
 
     <script>
-        // كود تبديل اللغة
+        // ===== تبديل اللغة =====
         function toggleLanguage() {
             const html = document.documentElement;
             const arContent = document.getElementById('content-ar');
@@ -333,48 +521,122 @@
             }
         }
 
-        // كود المطر الرقمي الفخم (Matrix Rain Effect)
-        const canvas = document.getElementById('matrix-canvas');
-        const ctx = canvas.getContext('2d');
+        // ===== محاكاة مطر رقمي أخضر، عالية الأداء ومتجاوبة =====
+        (function () {
+            const canvas = document.getElementById('rain-canvas');
+            const ctx = canvas.getContext('2d', { alpha: true });
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
+            let dpr = Math.min(window.devicePixelRatio || 1, 2);
+            let width = 0, height = 0;
+            let drops = [];
+            let maxDrops = 120;
+            let isMobile = false;
 
-        // الحروف والرموز البرمجية المتساقطة
-        const alphabet = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>[]{}+-*/_+=!?#@$";
-        const fontSize = 14;
-        const columns = canvas.width / fontSize;
-
-        const rainDrops = [];
-        for (let x = 0; x < columns; x++) {
-            rainDrops[x] = 1;
-        }
-
-        function drawMatrix() {
-            // تأثير التلاشي التدريجي الأسود ليعطي لمعان للمطر
-            ctx.fillStyle = 'rgba(6, 9, 14, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = '#00ff66'; // لون المطر الأخضر الفوسفوري
-            ctx.font = fontSize + 'px monospace';
-
-            for (let i = 0; i < rainDrops.length; i++) {
-                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
-
-                if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    rainDrops[i] = 0;
+            // حساب الإعدادات المناسبة حسب حجم الشاشة (كثافة/طول/سرعة)
+            function getResponsiveConfig(w) {
+                if (w <= 420) {
+                    return { density: 1 / 9000, minLen: 8, addLen: 14, minSpeed: 2.6, addSpeed: 2.4, maxDrops: 55, lineWidth: 1.1, alpha: 0.32 };
+                } else if (w <= 768) {
+                    return { density: 1 / 8200, minLen: 10, addLen: 16, minSpeed: 3, addSpeed: 3, maxDrops: 85, lineWidth: 1.25, alpha: 0.36 };
+                } else if (w <= 1100) {
+                    return { density: 1 / 7600, minLen: 12, addLen: 18, minSpeed: 3.4, addSpeed: 3.4, maxDrops: 105, lineWidth: 1.4, alpha: 0.4 };
                 }
-                rainDrops[i]++;
+                return { density: 1 / 7000, minLen: 10, addLen: 20, minSpeed: 4, addSpeed: 5, maxDrops: 130, lineWidth: 1.5, alpha: 0.4 };
             }
-        }
 
-        // سرعة تساقط المطر (كل 30 ميلي ثانية)
-        setInterval(drawMatrix, 30);
+            let cfg = getResponsiveConfig(window.innerWidth);
+
+            function makeDrop(randomY) {
+                return {
+                    x: Math.random() * width,
+                    y: randomY ? Math.random() * height : -(Math.random() * height),
+                    length: Math.random() * cfg.addLen + cfg.minLen,
+                    speed: Math.random() * cfg.addSpeed + cfg.minSpeed,
+                    opacity: Math.random() * 0.5 + 0.5
+                };
+            }
+
+            function buildDrops() {
+                cfg = getResponsiveConfig(width);
+                isMobile = width <= 600;
+                const target = Math.min(cfg.maxDrops, Math.round(width * height * cfg.density));
+                maxDrops = Math.max(24, target);
+                drops = new Array(maxDrops).fill(null).map(() => makeDrop(true));
+            }
+
+            function resizeCanvas() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                dpr = Math.min(window.devicePixelRatio || 1, 2);
+                canvas.width = Math.floor(width * dpr);
+                canvas.height = Math.floor(height * dpr);
+                canvas.style.width = width + 'px';
+                canvas.style.height = height + 'px';
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                buildDrops();
+            }
+
+            let resizeTimer;
+            window.addEventListener('resize', function () {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(resizeCanvas, 120);
+            }, { passive: true });
+
+            window.addEventListener('orientationchange', function () {
+                setTimeout(resizeCanvas, 200);
+            });
+
+            resizeCanvas();
+
+            let lastTime = performance.now();
+            const targetFrameMs = 1000 / 60;
+
+            function drawRain(now) {
+                requestAnimationFrame(drawRain);
+
+                const delta = now - lastTime;
+                if (delta < targetFrameMs - 2) return; // clamp to ~60fps, saves battery on high-refresh screens
+                lastTime = now;
+                const speedScale = Math.min(delta / targetFrameMs, 2.5);
+
+                ctx.fillStyle = 'rgba(5, 7, 10, 0.22)';
+                ctx.fillRect(0, 0, width, height);
+
+                ctx.lineCap = 'round';
+
+                for (let i = 0; i < drops.length; i++) {
+                    const drop = drops[i];
+
+                    ctx.strokeStyle = `rgba(0, 255, 102, ${(cfg.alpha * drop.opacity).toFixed(3)})`;
+                    ctx.lineWidth = cfg.lineWidth;
+
+                    ctx.beginPath();
+                    ctx.moveTo(drop.x, drop.y);
+                    ctx.lineTo(drop.x, drop.y + drop.length);
+                    ctx.stroke();
+
+                    // توهج خفيف لرأس القطرة لإحساس أكثر واقعية
+                    ctx.fillStyle = `rgba(160, 255, 200, ${(0.5 * drop.opacity).toFixed(3)})`;
+                    ctx.fillRect(drop.x - 0.5, drop.y + drop.length, 1, 1.5);
+
+                    drop.y += drop.speed * speedScale;
+
+                    if (drop.y > height) {
+                        drop.y = -drop.length - Math.random() * 40;
+                        drop.x = Math.random() * width;
+                        drop.speed = Math.random() * cfg.addSpeed + cfg.minSpeed;
+                        drop.opacity = Math.random() * 0.5 + 0.5;
+                    }
+                }
+            }
+
+            // إيقاف الرسم عند إخفاء التبويب لتوفير الأداء والبطارية
+            document.addEventListener('visibilitychange', function () {
+                if (!document.hidden) lastTime = performance.now();
+            });
+
+            requestAnimationFrame(drawRain);
+        })();
     </script>
 </body>
 </html>
