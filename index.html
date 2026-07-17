@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عبد الإله | Abdulilah - Portfolio</title>
+    <title>Abdulilah | عبد الإله - Portfolio</title>
     <!-- استدعاء مكتبة الأيقونات العالمية FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -72,16 +72,16 @@
             background: linear-gradient(90deg, #00ff66, #00aa44);
         }
 
-        /* زر تبديل اللغة */
+        /* زر تبديل اللغة - يبدأ من اليمين لأن الموقع يبدأ إنجليزي */
         .lang-switch {
             position: absolute;
             top: 20px;
-            left: 20px;
+            right: 20px;
         }
         
-        html[dir="ltr"] .lang-switch {
-            left: auto;
-            right: 20px;
+        html[dir="rtl"] .lang-switch {
+            right: auto;
+            left: 20px;
         }
 
         .lang-btn {
@@ -124,11 +124,11 @@
             font-family: 'Courier New', Courier, monospace;
             font-size: 0.8rem;
             color: var(--text-muted);
-            margin-right: 10px;
-        }
-        html[dir="ltr"] .terminal-title {
-            margin-right: 0;
             margin-left: 10px;
+        }
+        html[dir="rtl"] .terminal-title {
+            margin-left: 0;
+            margin-right: 10px;
         }
 
         /* منطقة الهوية الشخصية */
@@ -172,9 +172,9 @@
         /* النصوص والمعلومات */
         .bio-block {
             background: rgba(13, 17, 23, 0.7);
-            border-left: 3px solid var(--primary-color);
+            border-right: 3px solid var(--primary-color);
             padding: 15px;
-            border-radius: 0 8px 8px 0;
+            border-radius: 8px 0 0 8px;
             margin-bottom: 25px;
             font-size: 0.95rem;
             line-height: 1.6;
@@ -182,10 +182,10 @@
             text-align: justify;
         }
 
-        html[dir="ltr"] .bio-block {
-            border-left: none;
-            border-right: 3px solid var(--primary-color);
-            border-radius: 8px 0 0 8px;
+        html[dir="rtl"] .bio-block {
+            border-right: none;
+            border-left: 3px solid var(--primary-color);
+            border-radius: 0 8px 8px 0;
         }
 
         /* وسوم التقنيات */
@@ -209,7 +209,7 @@
 
         .skill-badge span {
             color: var(--primary-color);
-            margin-left: 4px;
+            margin-right: 4px;
         }
 
         /* الأيقونات وشبكة الحسابات */
@@ -247,17 +247,17 @@
 <body>
 
     <div class="portfolio-card">
-        <!-- زر التبديل -->
+        <!-- زر التبديل (يبدأ بكلمة العربية لأن الواجهة إنجليزية) -->
         <div class="lang-switch">
-            <button class="lang-btn" onclick="toggleLanguage()" id="langBtn">English</button>
+            <button class="lang-btn" onclick="toggleLanguage()" id="langBtn">العربية</button>
         </div>
 
-        <!-- تيرمنال علوي -->
+        <!-- تيرمنال علوي يبدأ بملف جافا سكريبت لطابع الويب -->
         <div class="terminal-header">
             <div class="dot r"></div>
             <div class="dot y"></div>
             <div class="dot g"></div>
-            <div class="terminal-title" id="terminalTitle">main.py</div>
+            <div class="terminal-title" id="terminalTitle">main.js</div>
         </div>
 
         <div class="profile-zone">
@@ -265,21 +265,21 @@
                 <i class="fa-solid fa-code"></i>
             </div>
             
-            <!-- القسم العربي -->
-            <div id="content-ar">
-                <h1 class="name">عبد الإله</h1>
-                <div class="tagline">&lt;مطور برمجيات ونظم أتمتة /&gt;</div>
-                <div class="bio-block">
-                    مرحباً بك في مساحتي البرمجية الخاصة. أنا شغوف ببناء الأنظمة الذكية، أتمتة المهام المعقدة، وابتكار حلول رقمية فعّالة تجمع بين قوة البرمجة، إدارة الأنظمة، واستراتيجيات التسويق الرقمي الحديثة.
-                </div>
-            </div>
-
-            <!-- القسم الإنجليزي (مخفي افتراضياً) -->
-            <div id="content-en" style="display: none;">
+            <!-- القسم الإنجليزي (يظهر أولاً) -->
+            <div id="content-en">
                 <h1 class="name">Abdulilah</h1>
                 <div class="tagline">&lt;Software Engineer & Automation Specialist /&gt;</div>
                 <div class="bio-block">
                     Welcome to my workspace. I focus on developing advanced tech applications, automating workflows, and building high-performance solutions integrated with smart system architectures and digital business insights.
+                </div>
+            </div>
+
+            <!-- القسم العربي (مخفي افتراضياً) -->
+            <div id="content-ar" style="display: none;">
+                <h1 class="name">عبد الإله</h1>
+                <div class="tagline">&lt;مطور برمجيات ونظم أتمتة /&gt;</div>
+                <div class="bio-block">
+                    مرحباً بك في مساحتي البرمجية الخاصة. أنا شغوف ببناء الأنظمة الذكية، أتمتة المهام المعقدة، وابتكار حلول رقمية فعّالة تجمع بين قوة البرمجة، إدارة الأنظمة، واستراتيجيات التسويق الرقمي الحديثة.
                 </div>
             </div>
         </div>
@@ -319,20 +319,20 @@
             const langBtn = document.getElementById('langBtn');
             const terminalTitle = document.getElementById('terminalTitle');
 
-            if (html.getAttribute('lang') === 'ar') {
-                html.setAttribute('lang', 'en');
-                html.setAttribute('dir', 'ltr');
-                arContent.style.display = 'none';
-                enContent.style.display = 'block';
-                langBtn.innerText = 'العربية';
-                terminalTitle.innerText = 'main.js';
-            } else {
+            if (html.getAttribute('lang') === 'en') {
                 html.setAttribute('lang', 'ar');
                 html.setAttribute('dir', 'rtl');
-                arContent.style.display = 'block';
                 enContent.style.display = 'none';
+                arContent.style.display = 'block';
                 langBtn.innerText = 'English';
                 terminalTitle.innerText = 'main.py';
+            } else {
+                html.setAttribute('lang', 'en');
+                html.setAttribute('dir', 'ltr');
+                enContent.style.display = 'block';
+                arContent.style.display = 'none';
+                langBtn.innerText = 'العربية';
+                terminalTitle.innerText = 'main.js';
             }
         }
     </script>
